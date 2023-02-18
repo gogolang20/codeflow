@@ -1,0 +1,70 @@
+syntax = "proto3"; //版本
+
+package person;
+
+//option go_package="包路径（从mod下开始写）;别名"; //一个配置，以gomodule 为基准
+//示例
+option go_package = "gogolang-golang/template-protobuf/pb/person;person";
+
+import "home/home.proto"; //引入包
+
+message Home{
+  repeated Person persons = 1;
+  message visit {
+    string name = 1;
+  }
+  visit v = 2; //使用
+}
+
+//相当于结构体
+message Person {
+  string name = 1;
+  int32 age = 2;
+  bool sex = 3;
+  repeated string test = 4; //切片
+  map <string, string> test_map = 5; //第一个参数只能是 string 或者 int，第二个参数不限制
+  reserved "test_map", "test"; //设置多个保留字
+  reserved 3; //设置保留数字
+}
+
+message Test_Enum {
+  enum Sex {
+    option allow_alias = true; //解决枚举值相同的问题
+    Man = 0;
+    WOMAN = 1;
+    GIRL = 1;
+    OTHER = 2;
+  }
+  home.Home i_home = 1;
+  Sex sex = 2;
+
+  oneof TestOneOf {//只能有一个值有效
+    string one = 3;
+    string two = 4;
+    string three = 5;
+  }
+}
+
+//想当与函数
+service SearchService {
+  rpc Search(Person) returns(Person); //传统的，即刻响应
+  rpc SearchIn(stream Person) returns(Person); //入参为流式
+  rpc SearchOut(Person) returns(stream Person); //出参为流式
+  rpc SearchIO(stream Person) returns(stream Person); //入参为流式，出参为流式
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
