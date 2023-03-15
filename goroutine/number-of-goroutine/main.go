@@ -27,7 +27,6 @@ func foo(urls []string, n int) {
 			<-ch
 		}()
 	}
-
 	wg.Wait()
 }
 

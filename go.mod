@@ -5,8 +5,10 @@ go 1.19
 require (
 	github.com/Shopify/sarama v1.38.1
 	github.com/bsm/sarama-cluster v2.1.15+incompatible
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/docker/docker v23.0.1+incompatible
 	github.com/elastic/go-elasticsearch/v7 v7.17.7
+	github.com/garyburd/redigo v1.6.4
 	github.com/gin-gonic/gin v1.8.2
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
@@ -15,6 +17,7 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/gofrs/uuid v4.4.0+incompatible
+	github.com/gogolang20/template v0.1.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/robfig/cron/v3 v3.0.1
@@ -23,6 +26,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/urfave/cli v1.22.12
 	go.mongodb.org/mongo-driver v1.11.2
+	gopkg.in/redsync.v1 v1.0.1
 	istio.io/client-go v1.17.0
 	k8s.io/api v0.26.1
 	k8s.io/apimachinery v0.26.1
@@ -55,7 +59,6 @@ require (
 	github.com/go-openapi/swag v0.19.14 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/gogolang20/template v0.1.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/google/btree v1.0.1 // indirect
@@ -102,6 +105,7 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/spf13/cobra v1.6.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stvp/tempredis v0.0.0-20181119212430-b82af8480203 // indirect
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect
 	github.com/xdg-go/scram v1.1.2 // indirect

@@ -226,7 +226,8 @@ func Version3(lockKey string) {
 	// Timer 间隔时间， and 重新设置的过期时间
 	// 每睡 1/3 的锁过期时间 check 一下是否过期， 重新设置过期时间
 	go func(uid string) {
-		ti := time.NewTimer(1 * time.Second)
+		ti := time.NewTicker(1 * time.Second)
+		defer ti.Stop()
 		for {
 			select {
 			case <-ti.C:
@@ -263,10 +264,17 @@ func Version3(lockKey string) {
 	// 释放锁
 	release_lock := `if redis.call('hexists', KEYS[1], ARGV[1]) == 0 then return nil elseif redis.call('hincrby', KEYS[1], ARGV[1], -1) == 0 then return redis.call('del', KEYS[1]) else return 0 end`
 	eval, err := client.Eval(release_lock, []string{lockKey}, uid).Result()
-	if err == nil && eval.(int64) > 0 {
-		println("unlock success!")
-	} else {
+	if err != nil {
 		println("unlock failed", err)
+	}
+	if eval == nil {
+		println("unlock success!")
+	}
+	if eval.(int64) > 0 {
+		println("unlock success!")
+	}
+	if eval.(int64) == 0 {
+		println("unlock success!")
 	}
 }
 
