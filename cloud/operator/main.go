@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"codeflow/gogolang-cloud/operator/pkg"
+	"codeflow/cloud/operator/pkg"
 
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
