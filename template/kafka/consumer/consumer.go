@@ -10,7 +10,7 @@ import (
 
 var (
 	kafkaConsumer *cluster.Consumer
-	kafkaBrokers  = []string{"192.168.152.158:9092"}
+	kafkaBrokers  = []string{"localhost:9092"}
 	kafkaTopic    = "topic1"
 	groupId       = "test_1"
 )

@@ -9,7 +9,7 @@ import (
 	"github.com/Shopify/sarama"
 )
 
-var Address = []string{"192.168.152.158:9092"}
+var Address = []string{"localhost:9092"}
 
 func main() {
 	syncProducer(Address)
@@ -48,7 +48,7 @@ func syncProducer(address []string) {
 		// 发送消息
 		part, offset, err := p.SendMessage(msg)
 		if err != nil {
-			log.Printf("send message(%s) err=%s \n", value, err)
+			log.Printf("send message(%s) err: [%s] \n", value, err)
 		} else {
 			fmt.Fprintf(os.Stdout, value+"发送成功，partition=%d, offset=%d \n", part, offset)
 		}

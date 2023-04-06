@@ -250,7 +250,9 @@ func UpdateByQuery() {
 	}
 	// new client
 	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
+	if err != nil {
+		log.Fatalf("Error creating the client: %s", err)
+	}
 	// UpdateByQuery performs an update on every document in the index without changing the source,
 	// for example to pick up a mapping change.
 	index := []string{"demo"}
