@@ -8,6 +8,14 @@ import (
 	"gopkg.in/redsync.v1"
 )
 
+/*
+在集群情况下，导致锁机制失效：
+1 客户端从master获取了锁
+2 slave还没来得及同步数据 master挂了
+3 于是slave升级成master
+4 其他客户端从新master中获取到锁 导致锁机制失效
+*/
+
 func newPool(server string) *redis.Pool {
 	return &redis.Pool{
 		MaxIdle:     3,
