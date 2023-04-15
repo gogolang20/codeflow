@@ -11,6 +11,7 @@ func Redo(str string) string {
 	stack := list.New()
 	redoStack := list.New()
 	fmt.Println(arr)
+
 	for _, val := range arr {
 		// 遇到普通词就压入stack，并清空redo栈，因为此时写入了一个新词，再往前的词已经找不回来了
 		// 遇到undo就从stack中弹栈至redo

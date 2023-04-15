@@ -2,79 +2,85 @@ package main
 
 import (
 	"fmt"
-	"net"
-	"time"
+
+	"github.com/eclipse/paho.mqtt.golang"
 )
 
-type MqttServer struct {
-	port       int
-	clients    []*MqttClient
-	newClients chan net.Conn
-}
+var client mqtt.Client
 
-type MqttClient struct {
-	conn   net.Conn
-	reader *MqttReader
-}
-
-func NewMqttReader(conn net.Conn) *MqttReader {
-	return &MqttReader{}
-}
-
-type MqttReader struct {
-}
-
-func (m *MqttReader) Read() (string, error) {
-
-}
-
-func NewMqttServer(port int) *MqttServer {
-	return &MqttServer{port: port, clients: make([]*MqttClient, 0), newClients: make(chan net.Conn)}
-}
-
-func (s *MqttServer) Start() {
-	ln, err := net.Listen("tcp", fmt.Sprintf(":%!d(MISSING)", s.port))
-	if err != nil {
-		fmt.Printf("failed to start server: %!s(MISSING)\n", err.Error())
-		return
-	}
-	fmt.Printf("server started on port %!d(MISSING)\n", s.port)
-
-	go s.acceptNewClients(ln)
-
-	for {
-		for _, client := range s.clients {
-			message, err := client.reader.Read()
-			if err != nil {
-				fmt.Printf("failed to read message: %!s(MISSING)\n", err.Error())
-			} else {
-				fmt.Printf("received message: %!s(MISSING)\n", message)
-			}
+// 初始化MQTT服务
+func NewClient() {
+	if client == nil {
+		opts := mqtt.NewClientOptions()
+		opts.AddBroker("tcp://broker.emqx.io:1883") // 这个中转服务器不需要任何账号密码
+		opts.SetClientID("go_mqtt_client1")
+		// opts.SetUsername("")
+		// opts.SetPassword("")
+		opts.OnConnect = func(c mqtt.Client) {
+			fmt.Println("MQTT链接成功！")
 		}
+		opts.OnConnectionLost = func(c mqtt.Client, err error) {
+			fmt.Println("MQTT断开链接！", err.Error())
+			fmt.Println("尝试重新链接！")
+			NewClient()
+		}
+		client = mqtt.NewClient(opts)
+	}
 
-		time.Sleep(time.Millisecond * 100)
+	if token := client.Connect(); token.Wait() && token.Error() != nil {
+		fmt.Println(token.Error())
+	}
+
+	// 订阅事件
+	for _, subscribe := range subscribes {
+		subscribe()
 	}
 }
 
-func (s *MqttServer) acceptNewClients(ln net.Listener) {
-	for {
-		conn, err := ln.Accept()
-		if err != nil {
-			fmt.Printf("failed to accept new client: %!s(MISSING)\n", err.Error())
-		} else {
-			fmt.Printf("new client connected: %!s(MISSING)\n", conn.RemoteAddr().String())
-			client := &MqttClient{
-				conn:   conn,
-				reader: NewMqttReader(conn),
-			}
-			s.clients = append(s.clients, client)
-			s.newClients <- conn
-		}
+// 订阅消息
+var subscribes = []func(){
+	// 直接写方法
+	func() {
+		ClientSubscribe("topic/subscribe/example", 1, func(c mqtt.Client, msg mqtt.Message) {
+			fmt.Println("subscribe Msg：", string(msg.Payload()))
+		}, func(err error) {
+			fmt.Println(err.Error())
+		})
+	},
+	// 调用
+	subscribeExample2,
+}
+
+func subscribeExample2() {
+	ClientSubscribe("topic/subscribe/example2", 1, func(c mqtt.Client, msg mqtt.Message) {
+		fmt.Println("subscribe Msg2：", string(msg.Payload()))
+	}, func(err error) {
+		fmt.Println(err.Error())
+	})
+}
+
+// 订阅消息
+func ClientSubscribe(topic string, qos byte, callback mqtt.MessageHandler, err func(error)) {
+	if token := client.Subscribe(topic, qos, func(c mqtt.Client, msg mqtt.Message) {
+		callback(c, msg)
+	}); token.Wait() && token.Error() != nil {
+		err(token.Error())
 	}
 }
 
 func main() {
-	server := NewMqttServer(1883)
+	err := ClientSend("topic/publish/example", 2, false, `{"code":0, "msg":"hello world!"}`)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	server.Start()
+}
+
+// 发布消息 ClientSend("topic/publish/example", 2, false, `{"code":0, "msg":"hello world!"}`)
+func ClientSend(topic string, qos byte, retained bool, payload interface{}) error {
+	if token := client.Publish(topic, qos, retained, payload); token.Wait() && token.Error() != nil {
+		fmt.Println("消息发布失败！", token.Error())
+		return token.Error()
+	}
+	return nil
 }
