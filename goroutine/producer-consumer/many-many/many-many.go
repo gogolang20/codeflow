@@ -1,8 +1,9 @@
 package many_many
 
 import (
-	"code_for_review/goroutine/producer-consumer/out"
 	"time"
+
+	"code_for_review/goroutine/producer-consumer/out"
 )
 
 type Task struct {

@@ -1,11 +1,12 @@
 package main
 
 import (
-	many_many "code_for_review/goroutine/producer-consumer/many-many"
-	"code_for_review/goroutine/producer-consumer/out"
 	"os"
 	"os/signal"
 	"syscall"
+
+	many_many "code_for_review/goroutine/producer-consumer/many-many"
+	"code_for_review/goroutine/producer-consumer/out"
 )
 
 func main() {

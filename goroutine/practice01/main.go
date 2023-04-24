@@ -8,6 +8,7 @@ import (
 /*
 两个共routine来回传递一个整数10次。当每个goroutine接收到整数时打印。每次通过整数都增加。一旦整数等于10，立刻终止程序
 */
+
 func main() {
 	share := make(chan int)
 

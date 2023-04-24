@@ -11,6 +11,7 @@ import (
 使用 work pool 同时生成最多100个随机数，拒绝偶数值。
 如果已经收集到100个奇书，就让协程停止运行
 */
+
 func main() {
 	values := make(chan int)
 	shutdown := make(chan struct{})

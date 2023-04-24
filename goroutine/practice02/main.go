@@ -11,6 +11,7 @@ import (
 该数字返回给主goroutine。设置缓冲区channel的大小，以便永远不会发送阻塞。不要分配比您
 需要的更多的缓冲区。让主goroutine显示它收到的每个随机数，然后终止程序。
 */
+
 const (
 	goroutines = 100
 )
