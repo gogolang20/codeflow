@@ -3,43 +3,43 @@ package main
 import (
 	"context"
 	"fmt"
-	"sync"
+
 	"test-grpc/test-server/pb/person"
-	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 func main() {
 	/*
 		normal
 	*/
-	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithInsecure())
-	// if err != nil {
-	// 	fmt.Println("conn err:", err)
-	// }
-	// defer grpcConn.Close()
+	grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		fmt.Println("conn err:", err)
+	}
+	defer grpcConn.Close()
 
-	// client := person.NewSearchServiceClient(grpcConn)
-	// res, err := client.Search(context.Background(), &person.PersonReq{Name: "i am sss"})
-	// if err != nil {
-	// 	fmt.Println("call err:", err)
-	// }
-	// fmt.Println("res:", res)
+	client := person.NewSearchServiceClient(grpcConn)
+	res, err := client.Search(context.Background(), &person.PersonReq{Name: "i am scs"})
+	if err != nil {
+		fmt.Println("call err:", err)
+	}
+	fmt.Println("res:", res)
 
 	/*
 		In
 	*/
-	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithInsecure())
+	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	// if err != nil {
-	// 	fmt.Println("conn err:", err)
+	// 	fmt.Println("[client][main] dial err:", err)
 	// }
 	// defer grpcConn.Close()
-
+	//
 	// client := person.NewSearchServiceClient(grpcConn)
 	// c, err := client.SearchIn(context.Background())
 	// if err != nil {
-	// 	fmt.Println("call err:", err)
+	// 	fmt.Println("[client][main] call err:", err)
 	// }
 	// for i := 0; ; i++ {
 	// 	time.Sleep(time.Second)
@@ -47,7 +47,7 @@ func main() {
 	// 	if i > 10 {
 	// 		res, err := c.CloseAndRecv()
 	// 		if err != nil {
-	// 			fmt.Println(err)
+	// 			fmt.Println("[][] err: ", err)
 	// 		}
 	// 		fmt.Println(res)
 	// 		break
@@ -57,14 +57,14 @@ func main() {
 	/*
 		Out
 	*/
-	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithInsecure())
+	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	// if err != nil {
-	// 	fmt.Println("conn err:", err)
+	// 	fmt.Println("[client][main] dial err:", err)
 	// }
 	// defer grpcConn.Close()
-
+	//
 	// client := person.NewSearchServiceClient(grpcConn)
-	// c, err := client.SearchOut(context.Background(), &person.PersonReq{Name: "sss"})
+	// c, err := client.SearchOut(context.Background(), &person.PersonReq{Name: "scs"})
 	// if err != nil {
 	// 	fmt.Println("call err:", err)
 	// }
@@ -80,41 +80,40 @@ func main() {
 	/*
 		IO
 	*/
-	grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithInsecure())
-	if err != nil {
-		fmt.Println("conn err:", err)
-	}
-	defer grpcConn.Close()
-
-	client := person.NewSearchServiceClient(grpcConn)
-	c, err := client.SearchIO(context.Background())
-	if err != nil {
-		fmt.Println("call err:", err)
-	}
-	var wg sync.WaitGroup
-
-	wg.Add(2)
-	go func() {
-		for {
-			time.Sleep(time.Second)
-			err := c.Send(&person.PersonReq{Name: "sss"})
-			if err != nil {
-				wg.Done()
-				break
-			}
-		}
-	}()
-	go func() {
-		for {
-			req, err := c.Recv()
-			if err != nil {
-				fmt.Println(err)
-				wg.Done()
-				break
-			}
-			fmt.Println(req)
-		}
-	}()
-	wg.Wait()
-
+	// grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// if err != nil {
+	// 	fmt.Println("conn err:", err)
+	// }
+	// defer grpcConn.Close()
+	//
+	// client := person.NewSearchServiceClient(grpcConn)
+	// c, err := client.SearchIO(context.Background())
+	// if err != nil {
+	// 	fmt.Println("call err:", err)
+	// }
+	// var wg sync.WaitGroup
+	//
+	// wg.Add(2)
+	// go func() {
+	// 	for {
+	// 		time.Sleep(time.Second)
+	// 		err := c.Send(&person.PersonReq{Name: "scs"})
+	// 		if err != nil {
+	// 			wg.Done()
+	// 			break
+	// 		}
+	// 	}
+	// }()
+	// go func() {
+	// 	for {
+	// 		req, err := c.Recv()
+	// 		if err != nil {
+	// 			fmt.Println(err)
+	// 			wg.Done()
+	// 			break
+	// 		}
+	// 		fmt.Println(req)
+	// 	}
+	// }()
+	// wg.Wait()
 }

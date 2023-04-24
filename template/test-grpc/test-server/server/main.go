@@ -4,8 +4,9 @@ import (
 	"context"
 	"fmt"
 	"net"
-	"test-grpc/test-server/pb/person"
 	"time"
+
+	"test-grpc/test-server/pb/person"
 
 	"google.golang.org/grpc"
 )
@@ -16,7 +17,7 @@ type personServer struct {
 
 func (*personServer) Search(ctx context.Context, req *person.PersonReq) (*person.PersonRes, error) {
 	name := req.GetName()
-	res := &person.PersonRes{Name: `revive` + name + ` message !!!`}
+	res := &person.PersonRes{Name: `revive ` + name + ` message.`}
 	return res, nil
 }
 
@@ -74,14 +75,15 @@ func (*personServer) SearchIO(server person.SearchService_SearchIOServer) error 
 }
 
 func main() {
-	fmt.Print()
 	lis, err := net.Listen("tcp", ":8888")
 	if err != nil {
-		fmt.Println("listen err:", err)
+		fmt.Println("[server][main] listen err:", err)
 	}
 	defer lis.Close()
+
 	s := grpc.NewServer()
 	person.RegisterSearchServiceServer(s, &personServer{})
+
 	fmt.Println("start")
 	s.Serve(lis)
 }
