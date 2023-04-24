@@ -81,6 +81,9 @@ func main() {
 	}
 	defer lis.Close()
 
+	// cred, _ := credentials.NewServerTLSFromFile("", "")
+	// TLS: grpc.Creds(cred)
+	// 拦截器: grpc.UnknownServiceHandler()
 	s := grpc.NewServer()
 	person.RegisterSearchServiceServer(s, &personServer{})
 
