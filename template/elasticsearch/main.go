@@ -10,15 +10,11 @@ import (
 	"github.com/elastic/go-elasticsearch/v7"
 )
 
-func failOnError(err error, msg string) {
-	if err != nil {
-		log.Fatalf("%s: %s", msg, err)
-	}
-}
+// type ES struct {
+// 	es *elasticsearch.Client
+// }
 
-// Index 在索引中创建或更新文档 索引不存在的情况下，会自动创建索引。
-// 默认的type（类型）是doc，下面是指定doc类型创建添加的。
-func Index() {
+func NewES() (*elasticsearch.Client, error) {
 	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
 	config := elasticsearch.Config{
 		Addresses: addresses,
@@ -27,9 +23,16 @@ func Index() {
 		CloudID:   "",
 		APIKey:    "",
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
+	return elasticsearch.NewClient(config)
+}
+
+// Index 在索引中创建或更新文档 索引不存在的情况下，会自动创建索引。
+// 默认的type（类型）是doc，下面是指定doc类型创建添加的。
+func Index() {
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
+	}
 	// Index creates or updates a document in an index
 	var buf bytes.Buffer
 	doc := map[string]interface{}{
@@ -37,11 +40,11 @@ func Index() {
 		"content": "外面的世界真的很精彩",
 	}
 	if err := json.NewEncoder(&buf).Encode(doc); err != nil {
-		failOnError(err, "Error encoding doc")
+		log.Fatal("Error encoding doc: ", err)
 	}
 	res, err := es.Index("demo", &buf, es.Index.WithDocumentType("doc"))
 	if err != nil {
-		failOnError(err, "Error Index response")
+		log.Fatal("error: ", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -49,20 +52,15 @@ func Index() {
 
 // Search 搜索
 func Search() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
 	// info
 	res, err := es.Info()
-	failOnError(err, "Error getting response")
+	if err != nil {
+		log.Fatal("Error getting response", err)
+	}
 	fmt.Println(res.String())
 	// search - highlight
 	var buf bytes.Buffer
@@ -81,7 +79,7 @@ func Search() {
 		},
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		failOnError(err, "Error encoding query")
+		log.Fatal("Error encoding query", err)
 	}
 	// Perform the search request.
 	res, err = es.Search(
@@ -92,7 +90,7 @@ func Search() {
 		es.Search.WithPretty(),
 	)
 	if err != nil {
-		failOnError(err, "Error getting response")
+		log.Fatal("Error getting response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -100,17 +98,10 @@ func Search() {
 
 // DeleteByQuery 通过匹配条件删除文档
 func DeleteByQuery() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
 	// DeleteByQuery deletes documents matching the provided query
 	var buf bytes.Buffer
 	query := map[string]interface{}{
@@ -121,12 +112,12 @@ func DeleteByQuery() {
 		},
 	}
 	if err := json.NewEncoder(&buf).Encode(query); err != nil {
-		failOnError(err, "Error encoding query")
+		log.Fatal("Error encoding query", err)
 	}
 	index := []string{"demo"}
 	res, err := es.DeleteByQuery(index, &buf)
 	if err != nil {
-		failOnError(err, "Error delete by query response")
+		log.Fatal(err, "Error delete by query response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -134,21 +125,14 @@ func DeleteByQuery() {
 
 // Delete通过_id删除文档
 func Delete() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
 	// Delete removes a document from the index
 	res, err := es.Delete("demo", "POcKSHIBX-ZyL96-ywQO")
 	if err != nil {
-		failOnError(err, "Error delete by id response")
+		log.Fatal("Error delete by id response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -156,17 +140,11 @@ func Delete() {
 
 // Create 添加文档（需要指定id，id已存在返回409）
 func Create() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
+
 	// Create creates a new document in the index.
 	// Returns a 409 response when a document with a same ID already exists in the index.
 	var buf bytes.Buffer
@@ -175,11 +153,11 @@ func Create() {
 		"content": "外面的世界真的很精彩",
 	}
 	if err := json.NewEncoder(&buf).Encode(doc); err != nil {
-		failOnError(err, "Error encoding doc")
+		log.Fatal("Error encoding doc", err)
 	}
 	res, err := es.Create("demo", "esd", &buf, es.Create.WithDocumentType("doc"))
 	if err != nil {
-		failOnError(err, "Error create response")
+		log.Fatal("Error create response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -187,20 +165,14 @@ func Create() {
 
 // Get 通过id获取文档
 func Get() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
+
 	res, err := es.Get("demo", "esd")
 	if err != nil {
-		failOnError(err, "Error get response")
+		log.Fatal("Error get response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -208,17 +180,10 @@ func Get() {
 
 // Update 通过_id更新文档
 func Update() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
+	es, err := NewES()
+	if err != nil {
+		log.Fatal("Error creating the client", err)
 	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
-	failOnError(err, "Error creating the client")
 	// Update updates a document with a script or partial document.
 	var buf bytes.Buffer
 	doc := map[string]interface{}{
@@ -228,11 +193,11 @@ func Update() {
 		},
 	}
 	if err := json.NewEncoder(&buf).Encode(doc); err != nil {
-		failOnError(err, "Error encoding doc")
+		log.Fatal("Error encoding doc", err)
 	}
 	res, err := es.Update("demo", "esd", &buf, es.Update.WithDocumentType("doc"))
 	if err != nil {
-		failOnError(err, "Error Update response")
+		log.Fatal("Error Update response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -240,18 +205,9 @@ func Update() {
 
 // UpdateByQuery 通过匹配条件更新文档
 func UpdateByQuery() {
-	addresses := []string{"http://127.0.0.1:9200", "http://127.0.0.1:9201"}
-	config := elasticsearch.Config{
-		Addresses: addresses,
-		Username:  "",
-		Password:  "",
-		CloudID:   "",
-		APIKey:    "",
-	}
-	// new client
-	es, err := elasticsearch.NewClient(config)
+	es, err := NewES()
 	if err != nil {
-		log.Fatalf("Error creating the client: %s", err)
+		log.Fatal("Error creating the client", err)
 	}
 	// UpdateByQuery performs an update on every document in the index without changing the source,
 	// for example to pick up a mapping change.
@@ -291,7 +247,7 @@ func UpdateByQuery() {
 		},
 	}
 	if err := json.NewEncoder(&buf).Encode(doc); err != nil {
-		failOnError(err, "Error encoding doc")
+		log.Fatal("Error encoding doc", err)
 	}
 	res, err := es.UpdateByQuery(
 		index,
@@ -301,7 +257,7 @@ func UpdateByQuery() {
 		es.UpdateByQuery.WithPretty(),
 	)
 	if err != nil {
-		failOnError(err, "Error Update response")
+		log.Fatal("Error Update response", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
