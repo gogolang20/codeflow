@@ -1,13 +1,13 @@
 package middleware
 
 import (
+	"log"
+	"net/http"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"net/http"
-
-	"log"
-	"strconv"
 )
 
 func Metric() gin.HandlerFunc {
