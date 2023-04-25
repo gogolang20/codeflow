@@ -1,33 +1,70 @@
 package main
 
 import (
-	"database/sql"
+	"codeflow/zero_save/sqlserver/logic"
+	"codeflow/zero_save/sqlserver/middleware"
 	"fmt"
-	"net/url"
+	"github.com/sirupsen/logrus"
+	"log"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/sqlserver"
+	"gorm.io/gorm"
 )
+
+/*
+sqlserver gorm
+*/
 
 const (
-	username = ""
-	password = ""
-	hostname = ""
-	port     = 9000
+	username = "gorm"
+	password = "LoremIpsum86"
+	hostname = "localhost"
+	port     = 9930
+	database = "gorm"
 )
 
-func main() {
-	query := url.Values{}
-	query.Add("app name", "MyAppName")
+var (
+	db *gorm.DB
+)
 
-	u := &url.URL{
-		Scheme: "sqlserver",
-		User:   url.UserPassword(username, password),
-		Host:   fmt.Sprintf("%s:%d", hostname, port),
-		// Path:  instance, // if connecting to an instance instead of a port
-		RawQuery: query.Encode(),
-	}
-	db, err := sql.Open("sqlserver", u.String())
+func init2() {
+	// github.com/denisenkom/go-mssqldb
+	dsn := fmt.Sprintf(`sqlserver://%s:%s@%s:%d?database=%s`, username, password, hostname, port, database)
+	// dsn := "sqlserver://gorm:LoremIpsum86@localhost:9930?database=gorm"
+	db, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {
-		return
+		log.Fatal("[Sqlserver][init] sqlserver error: ", err)
 	}
 
-	db.Ping()
+	sqlDB, err := db.DB()
+	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
+	sqlDB.SetMaxIdleConns(10)
+	// SetMaxOpenConns sets the maximum number of open connections to the database.
+	sqlDB.SetMaxOpenConns(100)
+	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
+	sqlDB.SetConnMaxLifetime(10 * time.Second)
+}
+
+type User struct {
+	ID string `json:"id"`
+}
+
+func main() {
+	router := gin.Default()
+	// router.Use(Auth())
+
+	go func() {
+		logrus.Info("start prometheus")
+		middleware.Start()
+	}()
+
+	gp := router.Group("app/v1")
+	{
+		gp.Use(middleware.Metric())
+		gp.GET("/log", logic.Login)
+	}
+
+	router.Run("127.0.0.1:9000")
 }
