@@ -10,6 +10,7 @@ import (
 // 2 管控 goroutine 生命周期
 // 3 能够控制 goroutine 什么时候退出
 
+// lifecycle
 func main() {
 	tr := NewTracker()
 	go tr.Run()

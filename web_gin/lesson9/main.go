@@ -1,7 +1,12 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
 
+	"github.com/gin-gonic/gin"
+)
+
+// query postform
 func main() {
 	r := gin.Default()
 
@@ -13,7 +18,8 @@ func main() {
 func PostForm(c *gin.Context) {
 	id := c.Param("id")
 	userName := c.PostForm("user_name")
-	c.JSON(200, gin.H{
+
+	c.JSON(http.StatusOK, gin.H{
 		"id":        id,
 		"user_name": userName,
 	})

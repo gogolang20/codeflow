@@ -29,13 +29,14 @@ func middleware2(c *gin.Context) {
 func main() {
 	r := gin.Default()
 	r.Use(middleware1, middleware2)
+
 	r.GET("ping", func(c *gin.Context) {
 		log.Println("func in .....")
 		k := c.GetInt("key") // 1000
 		// 3000
 		c.Set("key", k+2000)
 		log.Println("func done .....")
-
 	})
+
 	r.Run()
 }

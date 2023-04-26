@@ -2,6 +2,7 @@ package main
 
 import "github.com/gin-gonic/gin"
 
+// 泛绑定
 func main() {
 	r := gin.Default()
 

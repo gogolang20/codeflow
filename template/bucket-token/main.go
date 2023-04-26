@@ -11,7 +11,7 @@ type TokenLimiter struct {
 	limit float64 // 速率
 	burst int     // 桶大小
 
-	mu     sync.Mutex //
+	mu     sync.Mutex // 锁
 	tokens float64    // 桶里token 数量
 	last   time.Time  // 上一次消耗令牌的时间
 }
@@ -42,11 +42,11 @@ func (lim *TokenLimiter) AllowN(now time.Time, n int) bool {
 	lim.tokens -= float64(n)
 	lim.last = now
 	return true
-
 }
 
 func main() {
 	limiter := NewTokenLimiter(3, 5)
+
 	for {
 		n := 4
 		for i := 0; i < n; i++ {
@@ -59,6 +59,6 @@ func main() {
 			}(i)
 		}
 		time.Sleep(time.Second)
-		fmt.Println("===========================")
+		fmt.Println("------")
 	}
 }

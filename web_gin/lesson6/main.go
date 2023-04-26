@@ -7,6 +7,7 @@ type Person struct {
 	Name string `uri:"name"`
 }
 
+// parameters path
 func main() {
 	r := gin.Default()
 

@@ -2,7 +2,8 @@ package main
 
 import "fmt"
 
-// 本文永久链接：https://github.com/gocn/translator/blob/master/2021/w49_Tutorial_Getting_started_with_generics.md
+// 本文永久链接
+// https://github.com/gocn/translator/blob/master/2021/w49_Tutorial_Getting_started_with_generics.md
 
 type Number interface {
 	int64 | float64
