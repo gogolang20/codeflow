@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"test-grpc/test-server/pb/person"
+	"test-grpc/pb/person"
 
 	"google.golang.org/grpc"
 )

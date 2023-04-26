@@ -2,11 +2,12 @@ syntax = "proto3"; //版本
 
 package person;
 
-//option go_package="包路径（从mod下开始写）;别名"; //一个配置，以gomodule 为基准
+// option go_package="包路径（从mod下开始写）;别名";
+// 一个配置，以gomodule 为基准
 //示例
 option go_package = "codeflow/template/protobuf/pb/person;person";
 
-import "home/home.proto"; //引入包
+import "codeflow/template/protobuf/pb/home/home.proto"; // 引入包
 
 message Home{
   repeated Person persons = 1;
@@ -23,8 +24,8 @@ message Person {
   bool sex = 3;
   repeated string test = 4; //切片
   map <string, string> test_map = 5; //第一个参数只能是 string 或者 int，第二个参数不限制
-  reserved "test_map", "test"; //设置多个保留字
-  reserved 3; //设置保留数字
+//  reserved "test_map", "test"; //设置多个保留字
+//  reserved 3; //设置保留数字
 }
 
 message Test_Enum {
@@ -52,3 +53,6 @@ service SearchService {
   rpc SearchOut(Person) returns(stream Person); //出参为流式
   rpc SearchIO(stream Person) returns(stream Person); //入参为流式，出参为流式
 }
+
+// 没有 import 编译
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./person.proto
