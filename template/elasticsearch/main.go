@@ -44,7 +44,7 @@ func Index() {
 	}
 	res, err := es.Index("demo", &buf, es.Index.WithDocumentType("doc"))
 	if err != nil {
-		log.Fatal("error: ", err)
+		log.Fatal("[Index] error: ", err)
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
@@ -261,4 +261,8 @@ func UpdateByQuery() {
 	}
 	defer res.Body.Close()
 	fmt.Println(res.String())
+}
+
+func main() {
+	Index()
 }
