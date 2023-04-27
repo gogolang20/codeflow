@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"codeflow/zero_save/sqlserver/model"
 	"fmt"
 	"log"
 	"time"
@@ -19,7 +20,6 @@ const (
 
 type IDB interface {
 	Get() (interface{}, error)
-	List() (interface{}, error)
 }
 
 type DB struct {
@@ -49,11 +49,58 @@ func NewDB() IDB {
 }
 
 func (d *DB) Get() (interface{}, error) {
+
+	// db.First(&user, "id = ?", "1b74413f-f3b8-409f-ac47-e8c062e3472a")
+	// SELECT * FROM users WHERE id = "1b74413f-f3b8-409f-ac47-e8c062e3472a";
+
 	// d.db.Get()
 	return nil, nil
 }
 
-func (d *DB) List() (interface{}, error) {
+/*
+temp
+*/
+var dbGorm *gorm.DB
+
+func init() {
+	dsn := fmt.Sprintf(`sqlserver://%s:%s@%s:%d?database=%s`, username, password, hostname, port, database)
+	dbGorm, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
+	if err != nil {
+		log.Fatal("[Sqlserver][init] sqlserver error: ", err)
+	}
+
+	sqlDB, err := dbGorm.DB()
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
+	sqlDB.SetConnMaxLifetime(10 * time.Second)
+}
+
+func CreateJob(job model.Job) (*model.Job, error) {
+	dbGorm.Exec("")
 
 	return nil, nil
+}
+
+func GetJob(jobID string) (*model.Job, error) {
+	dbGorm.Exec("")
+
+	return nil, nil
+}
+
+func ListJob() ([]*model.Job, error) {
+	dbGorm.Exec("")
+
+	return nil, nil
+}
+
+func UpdateJob() (*model.Job, error) {
+	dbGorm.Exec("")
+
+	return nil, nil
+}
+
+func DeleteJob() error {
+	dbGorm.Exec("")
+
+	return nil
 }

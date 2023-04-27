@@ -10,17 +10,27 @@ import (
 
 func main() {
 	router := gin.Default()
-	// router.Use(Auth())
 
+	// 授权登录
+	// 用户权限查询
+	router.Use(middleware.Auth())
+
+	// monitor: prometheus
 	go func() {
 		logrus.Info("start prometheus")
 		middleware.Start()
 	}()
 
-	gp := router.Group("app/v1")
+	jobGroup := router.Group("app/v1")
 	{
-		gp.Use(middleware.Metric())
-		gp.GET("/log", logic.Login)
+		jobGroup.Use(middleware.Metric())
+
+		jobGroup.POST("/job", logic.CreateJob)
+		jobGroup.GET("/job/:job_id", logic.GetJob)
+		// 显示未完成任务
+		jobGroup.GET("/job/list", logic.ListJob)
+		jobGroup.PATCH("/job/:job_id", logic.UpdateJob)
+		jobGroup.DELETE("/job/:job_id", logic.DeleteJob)
 	}
 
 	router.Run("127.0.0.1:9000")
