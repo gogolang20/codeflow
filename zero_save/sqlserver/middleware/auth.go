@@ -8,15 +8,16 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		token := c.Request.Header.Get("x-token")
+		return
+
+		token := c.Request.Header.Get("token")
 		if token == "" {
 			c.Abort()
 			return
 		}
-		fmt.Println("[main][Auth] ctx: ")
-		// jwt.ParseWithClaims(token, jwt.Keyfunc())
+		fmt.Println("[middleware][Auth] ctx: ")
 
-		c.Set("claims", "123")
+		c.Set("claims", "tmp")
 		c.Next()
 	}
 }

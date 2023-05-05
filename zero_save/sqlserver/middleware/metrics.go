@@ -13,7 +13,7 @@ import (
 func Metric() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Next()
-		log.Println(c.Request.Host, c.Request.RequestURI, c.Request.Method, strconv.Itoa(c.Writer.Status()))
+		log.Println("[middleware][Metric] after next: ", c.Request.Host, c.Request.RequestURI, c.Request.Method, strconv.Itoa(c.Writer.Status()))
 		httpCountVec.WithLabelValues(
 			c.Request.Host,
 			c.Request.RequestURI,

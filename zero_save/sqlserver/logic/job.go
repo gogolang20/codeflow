@@ -26,9 +26,15 @@ func CreateJob(c *gin.Context) {
 func GetJob(c *gin.Context) {
 	jobID := c.Param("job_id")
 
+	c.JSON(http.StatusOK, gin.H{
+		"Message": jobID,
+	})
+	return
+
 	job, err := dao.GetJob(jobID)
 	if err != nil {
 		c.String(http.StatusBadRequest, "error")
+		return
 	}
 
 	c.JSON(http.StatusOK, model.ToResponse(job))

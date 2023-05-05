@@ -63,6 +63,7 @@ temp
 var dbGorm *gorm.DB
 
 func init() {
+	return
 	dsn := fmt.Sprintf(`sqlserver://%s:%s@%s:%d?database=%s`, username, password, hostname, port, database)
 	dbGorm, err := gorm.Open(sqlserver.Open(dsn), &gorm.Config{})
 	if err != nil {

@@ -21,7 +21,7 @@ func main() {
 		middleware.Start()
 	}()
 
-	jobGroup := router.Group("app/v1")
+	jobGroup := router.Group("app/v1/")
 	{
 		jobGroup.Use(middleware.Metric())
 
