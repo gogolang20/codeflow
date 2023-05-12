@@ -1,10 +1,10 @@
-package logic
+package logics
 
 import (
 	"net/http"
 
-	"codeflow/zero_save/sqlserver/dao"
-	"codeflow/zero_save/sqlserver/model"
+	"codeflow/zero_save/DemoServer/dao"
+	"codeflow/zero_save/DemoServer/model"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"codeflow/zero_save/sqlserver/logic"
-	"codeflow/zero_save/sqlserver/middleware"
+	"codeflow/zero_save/DemoServer/logics"
+	"codeflow/zero_save/DemoServer/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -25,12 +25,12 @@ func main() {
 	{
 		jobGroup.Use(middleware.Metric())
 
-		jobGroup.POST("/job", logic.CreateJob)
-		jobGroup.GET("/job/:job_id", logic.GetJob)
+		jobGroup.POST("/job", logics.CreateJob)
+		jobGroup.GET("/job/:job_id", logics.GetJob)
 		// 显示未完成任务
-		jobGroup.GET("/job/list", logic.ListJob)
-		jobGroup.PATCH("/job/:job_id", logic.UpdateJob)
-		jobGroup.DELETE("/job/:job_id", logic.DeleteJob)
+		jobGroup.GET("/job/list", logics.ListJob)
+		jobGroup.PATCH("/job/:job_id", logics.UpdateJob)
+		jobGroup.DELETE("/job/:job_id", logics.DeleteJob)
 	}
 
 	router.Run("127.0.0.1:9000")

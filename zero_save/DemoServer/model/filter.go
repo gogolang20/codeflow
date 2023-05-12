@@ -1,7 +1,7 @@
 package model
 
 type JobFilter struct {
-	JobID string `json:"job_id"`
+	ID string `json:"id"`
 }
 
 func (j *JobFilter) MysqlFilter() {
