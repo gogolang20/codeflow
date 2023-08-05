@@ -36,7 +36,7 @@ import (
 	}
 
 执行结果如下
-$ go run main.go
+$ go run hello.go
 Successfully opened users.json
 User Type: Reader
 User Age: 23
