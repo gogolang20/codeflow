@@ -1,7 +1,7 @@
 package main
 
 import (
-	cache_server "code_for_review/template/local_cache/cache-server"
+	codeflow "codeflow/template/local_cache/cache-server"
 	"fmt"
 )
 
@@ -14,7 +14,7 @@ import (
 */
 
 func main() {
-	cache := cache_server.NewcacheServer()
+	cache := codeflow.NewcacheServer()
 	cache.SetMaxMemory("100MB")
 
 	cache.Set("int", 1)
