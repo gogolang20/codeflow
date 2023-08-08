@@ -5,11 +5,6 @@ import (
 	"time"
 )
 
-/*
-Go资源池简版
-https://blog.csdn.net/finghting321/article/details/106492915/
-*/
-
 type Task struct {
 	f func() error
 }

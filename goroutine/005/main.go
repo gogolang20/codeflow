@@ -54,24 +54,24 @@ const (
 	MAX_NUM = 200
 )
 
-var (
-	ch       = make(chan struct{})
-	flagChan = make(chan int, MAX_NUM)
-	wg       = sync.WaitGroup{}
-)
-
 func main() {
+	var (
+		ch       = make(chan struct{})
+		flagChan = make(chan int, MAX_NUM)
+		wg       = sync.WaitGroup{}
+	)
+
 	for i := 1; i <= MAX_NUM; i++ {
 		flagChan <- i
 	}
 	wg.Add(2)
-	go work01()
-	go work02()
+	go work01(&wg, ch, flagChan)
+	go work02(&wg, ch, flagChan)
 	wg.Wait()
 	// time.Sleep(2 * time.Second)
 }
 
-func work01() {
+func work01(wg *sync.WaitGroup, ch chan struct{}, flagChan chan int) {
 	for {
 		// block
 		ch <- struct{}{}
@@ -83,7 +83,7 @@ func work01() {
 	}
 }
 
-func work02() {
+func work02(wg *sync.WaitGroup, ch chan struct{}, flagChan chan int) {
 	for {
 		// read
 		<-ch
