@@ -2,56 +2,78 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"log"
-	"math/rand"
-	"sync"
-	"sync/atomic"
 	"time"
 )
 
-// Golang的并发二 资源池
-type DBConnection struct {
-	id int32
+/*
+Go资源池简版
+https://blog.csdn.net/finghting321/article/details/106492915/
+*/
+
+type Task struct {
+	f func() error
 }
 
-func (D DBConnection) Close() error {
-	fmt.Println("database closed # " + fmt.Sprint(D.id))
-	return nil
-}
-
-var wg sync.WaitGroup
-var counter int32
-
-func Factory() (io.Closer, error) {
-	atomic.AddInt32(&counter, 1)
-	return &DBConnection{id: counter}, nil
-}
-
-func performQuery(query int, pool *Pool) {
-	defer wg.Done()
-	resource, err := pool.AcquireResource()
-	if err != nil {
-		fmt.Println(err)
+func NewTask(f func() error) *Task {
+	t := Task{
+		f: f,
 	}
-	defer pool.ReleaseResource(resource)
+	return &t
+}
 
-	t := rand.Int()%10 + 1
-	time.Sleep(time.Duration(t) * time.Second)
-	fmt.Println("finish query" + fmt.Sprint(query))
+func (t *Task) Execute() {
+	t.f()
+}
+
+type Pool struct {
+	EntryChannel chan *Task
+	worker_num   int
+	JobsChannel  chan *Task
+}
+
+func NewPool(cap int) *Pool {
+	return &Pool{
+		EntryChannel: make(chan *Task),
+		worker_num:   cap,
+		JobsChannel:  make(chan *Task),
+	}
+}
+
+func (p *Pool) worker(work_ID int) {
+	for task := range p.JobsChannel {
+		task.Execute()
+		fmt.Println("worker ID ", work_ID)
+	}
+}
+
+func (p *Pool) Run() {
+	for i := 0; i < p.worker_num; i++ {
+		fmt.Println("start worker:", i)
+		go p.worker(i)
+	}
+	for task := range p.EntryChannel {
+		p.JobsChannel <- task
+	}
+	close(p.JobsChannel)
+	fmt.Println("close JobsChannel")
+
+	close(p.EntryChannel)
+	fmt.Println("close EntryChannel")
 }
 
 func main() {
-	p, err := NewPool(Factory, 5)
-	if err != nil {
-		log.Fatal(err)
-	}
+	t := NewTask(func() error {
+		fmt.Println("create task: ", time.Now().Format("2006-01-02 15:04:05"))
+		return nil
+	})
 
-	wg.Add(10)
-	for id := 0; id < 10; id++ {
-		go performQuery(id, p)
-	}
-	wg.Wait()
+	p := NewPool(3)
 
-	p.Close()
+	go func() {
+		for {
+			p.EntryChannel <- t
+		}
+	}()
+
+	p.Run()
 }

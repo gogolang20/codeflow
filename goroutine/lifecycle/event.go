@@ -6,9 +6,11 @@ import (
 	"time"
 )
 
-// 1 调用者 决定是否使用 go 并发
-// 2 管控 goroutine 生命周期
-// 3 能够控制 goroutine 什么时候退出
+/*
+1 调用者 决定是否使用 go 并发
+2 管控 goroutine 生命周期
+3 能够控制 goroutine 什么时候退出
+*/
 
 // lifecycle
 func main() {
