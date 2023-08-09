@@ -1,7 +1,7 @@
 package many_one
 
 import (
-	"code_for_review/goroutine/producer-consumer/out"
+	"codeflow/template/producer-consumer/out"
 	"sync"
 )
 

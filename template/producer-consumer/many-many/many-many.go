@@ -3,7 +3,7 @@ package many_many
 import (
 	"time"
 
-	"code_for_review/goroutine/producer-consumer/out"
+	"codeflow/template/producer-consumer/out"
 )
 
 type Task struct {

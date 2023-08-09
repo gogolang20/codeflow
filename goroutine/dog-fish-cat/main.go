@@ -6,54 +6,6 @@ import (
 	"sync/atomic"
 )
 
-// 资料地址：没有次数限制
-// https://www.bilibili.com/video/BV1EF411h7Xq?p=15
-// func cat(fishCh, catCh chan struct{}, wg *sync.WaitGroup) {
-// 	wg.Add(1)
-// 	go func() {
-// 		for {
-// 			fmt.Println("cat")
-// 			catCh <- struct{}{}
-// 			<-fishCh //顺序不能修改
-// 		}
-// 		wg.Done()
-// 	}()
-// }
-// func dog(catCh, dogCh chan struct{}, wg *sync.WaitGroup) {
-// 	wg.Add(1)
-// 	go func() {
-// 		for {
-// 			<-catCh
-// 			fmt.Println("dog")
-// 			dogCh <- struct{}{}
-// 		}
-// 		wg.Done()
-// 	}()
-// }
-// func fish(dogCh, fishCh chan struct{}, wg *sync.WaitGroup) {
-// 	wg.Add(1)
-// 	go func() {
-// 		for {
-// 			<-dogCh
-// 			fmt.Println("fish")
-// 			time.Sleep(time.Second) //等待一秒钟
-// 			fishCh <- struct{}{}
-// 		}
-// 		wg.Done()
-// 	}()
-// }
-// func main() {
-// 	catCh := make(chan struct{})
-// 	dogCh := make(chan struct{})
-// 	fishCh := make(chan struct{})
-// 	wg := sync.WaitGroup{}
-
-// 	cat(fishCh, catCh, &wg)
-// 	dog(catCh, dogCh, &wg)
-// 	fish(dogCh, fishCh, &wg)
-// 	wg.Wait()
-// }
-
 // 控制打印次数 100次
 func main() {
 	var wg sync.WaitGroup

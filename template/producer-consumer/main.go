@@ -5,8 +5,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	many_many "code_for_review/goroutine/producer-consumer/many-many"
-	"code_for_review/goroutine/producer-consumer/out"
+	many_many "codeflow/template/producer-consumer/many-many"
+	"codeflow/template/producer-consumer/out"
 )
 
 func main() {
