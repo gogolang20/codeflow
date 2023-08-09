@@ -10,10 +10,9 @@ type Task struct {
 }
 
 func NewTask(f func() error) *Task {
-	t := Task{
+	return &Task{
 		f: f,
 	}
-	return &t
 }
 
 func (t *Task) Execute() {
