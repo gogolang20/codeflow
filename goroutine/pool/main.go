@@ -22,27 +22,27 @@ func (t *Task) Execute() {
 
 type Pool struct {
 	EntryChannel chan *Task
-	worker_num   int
+	workerNum    int
 	JobsChannel  chan *Task
 }
 
 func NewPool(cap int) *Pool {
 	return &Pool{
 		EntryChannel: make(chan *Task),
-		worker_num:   cap,
+		workerNum:    cap,
 		JobsChannel:  make(chan *Task),
 	}
 }
 
-func (p *Pool) worker(work_ID int) {
+func (p *Pool) worker(workID int) {
 	for task := range p.JobsChannel {
 		task.Execute()
-		fmt.Println("worker ID ", work_ID)
+		fmt.Println("worker ID ", workID)
 	}
 }
 
 func (p *Pool) Run() {
-	for i := 0; i < p.worker_num; i++ {
+	for i := 0; i < p.workerNum; i++ {
 		fmt.Println("start worker:", i)
 		go p.worker(i)
 	}
@@ -58,7 +58,7 @@ func (p *Pool) Run() {
 
 func main() {
 	t := NewTask(func() error {
-		fmt.Println("create task: ", time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Println("create task: ", time.Now().Format(time.DateTime)) // "2006-01-02 15:04:05"
 		return nil
 	})
 
