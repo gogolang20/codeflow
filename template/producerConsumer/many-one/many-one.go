@@ -1,7 +1,7 @@
 package many_one
 
 import (
-	"codeflow/template/producer-consumer/out"
+	"codeflow/template/producerConsumer/out"
 	"sync"
 )
 

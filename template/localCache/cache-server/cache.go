@@ -3,7 +3,7 @@ package cache_server
 import (
 	"time"
 
-	"codeflow/template/local_cache/cache"
+	"codeflow/template/localCache/cache"
 )
 
 // cache server

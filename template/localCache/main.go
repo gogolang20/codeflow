@@ -1,7 +1,7 @@
 package main
 
 import (
-	codeflow "codeflow/template/local_cache/cache-server"
+	codeflow "codeflow/template/localCache/cache-server"
 	"fmt"
 )
 

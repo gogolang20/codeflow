@@ -3,7 +3,7 @@ package many_many
 import (
 	"time"
 
-	"codeflow/template/producer-consumer/out"
+	"codeflow/template/producerConsumer/out"
 )
 
 type Task struct {
