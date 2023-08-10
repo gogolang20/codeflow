@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -28,7 +27,7 @@ func ReadAll2(filename string) error {
 		return err
 	}
 
-	content, err := ioutil.ReadAll(file)
+	content, err := io.ReadAll(file)
 	log.Printf("read %s content is %s\n", filename, content)
 
 	file.Close()
