@@ -140,7 +140,7 @@ func readByte3(filename string) error {
 }
 
 /*
-	分隔符读取
+分隔符读取
 */
 func readScanner(filename string) error {
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0666)
