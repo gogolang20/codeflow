@@ -1,6 +1,7 @@
 package cache_server
 
 import (
+	"strconv"
 	"time"
 
 	"codeflow/template/localCache/cache"
@@ -17,8 +18,8 @@ func NewcacheServer() *cacheServer {
 	}
 }
 
-func (cs *cacheServer) SetMaxMemory(size string) bool {
-	return cs.memCache.SetMaxMemory(size)
+func (cs *cacheServer) SetMaxMemory(size int, unit string) bool {
+	return cs.memCache.SetMaxMemory(strconv.Itoa(size) + " " + unit)
 }
 
 func (cs *cacheServer) Set(key string, val interface{}, expire ...time.Duration) bool {

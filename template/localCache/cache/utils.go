@@ -3,7 +3,6 @@ package cache
 import (
 	"encoding/json"
 	"log"
-	"regexp"
 	"strconv"
 	"strings"
 )
@@ -19,10 +18,10 @@ const (
 )
 
 func ParseSize(size string) (int64, string) {
-	re, _ := regexp.Compile("[0-9]+")
-	unit := string(re.ReplaceAll([]byte(size), []byte("")))
-	num, _ := strconv.ParseInt(strings.Replace(size, unit, "", 1), 10, 64)
-	unit = strings.ToUpper(unit)
+	split := strings.Split(size, " ")
+	num, _ := strconv.ParseInt(split[0], 10, 64)
+	unit := strings.ToUpper(split[1])
+
 	var byteNum int64 = 0
 	switch unit {
 	case "B":
