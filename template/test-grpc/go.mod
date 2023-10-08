@@ -1,6 +1,6 @@
 module test-grpc
 
-go 1.17
+go 1.20
 
 require (
 	google.golang.org/grpc v1.48.0
