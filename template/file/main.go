@@ -24,7 +24,7 @@ var fileName = "mac.txt"
 
 func main() {
 	// 创建文件
-	f, err := os.Create("asong.txt")
+	f, err := os.Create("mike.txt")
 	if err != nil {
 		log.Fatalf("create file failed err=%s\n", err)
 	}
@@ -64,7 +64,7 @@ func main() {
 	}
 
 	// 删除文件
-	err = os.Remove("asong.txt")
+	err = os.Remove("mike.txt")
 	if err != nil {
 		log.Fatalf("remove file failed err=%s\n", err)
 	}

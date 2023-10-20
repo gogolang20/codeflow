@@ -12,7 +12,7 @@ import (
 	读取全文件
 */
 
-func readAll(filename string) error {
+func OSReadAll(filename string) error {
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		return err
@@ -21,16 +21,16 @@ func readAll(filename string) error {
 	return nil
 }
 
-func ReadAll2(filename string) error {
-	file, err := os.Open("asong.txt")
+func IOReadAll(filename string) error {
+	file, err := os.Open("mike.txt")
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	content, err := io.ReadAll(file)
 	log.Printf("read %s content is %s\n", filename, content)
 
-	file.Close()
 	return nil
 }
 
@@ -43,6 +43,8 @@ func readLine(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
 	bufferedReader := bufio.NewReader(file)
 	for {
 		// ReadLine is a low-level line-reading primitive. Most callers should use
@@ -58,19 +60,22 @@ func readLine(filename string) error {
 		}
 		log.Printf("readline %s every line data is %s\n", filename, line)
 	}
-	file.Close()
+
 	return nil
 }
 
 /*
 	按块读取文件
 */
+
 // use bufio.NewReader
 func readByte(filename string) error {
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0666)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+
 	// 创建 Reader
 	r := bufio.NewReader(file)
 
@@ -87,7 +92,7 @@ func readByte(filename string) error {
 		}
 		log.Printf("writeByte %s every read 2 byte is %s\n", filename, string(buf[:n]))
 	}
-	file.Close()
+
 	return nil
 }
 
@@ -97,6 +102,7 @@ func readByte2(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	// 每次读取 2 个字节
 	buf := make([]byte, 2)
@@ -111,7 +117,7 @@ func readByte2(filename string) error {
 		}
 		log.Printf("writeByte %s every read 2 byte is %s\n", filename, string(buf[:n]))
 	}
-	file.Close()
+
 	return nil
 }
 
