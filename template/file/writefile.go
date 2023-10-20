@@ -8,7 +8,7 @@ import (
 
 // 快写文件
 func writeAll(filename string) error {
-	err := os.WriteFile("asong.txt", []byte("Hi asong\n"), 0666)
+	err := os.WriteFile("mike.txt", []byte("Hi mike\n"), 0666)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func writeAll(filename string) error {
 // 直接操作IO
 func writeLine(filename string) error {
 	data := []string{
-		"asong",
+		"mike",
 		"test",
 		"123",
 	}
@@ -56,20 +56,16 @@ func writeLine2(filename string) error {
 	for i := 0; i < 2; i++ {
 		// 写字符串到buffer
 		bytesWritten, err := bufferedWriter.WriteString(
-			"asong真帅\n",
+			"mike 真帅\n",
 		)
 		if err != nil {
 			return err
 		}
 		log.Printf("Bytes written: %d\n", bytesWritten)
 	}
-	// 写内存buffer到硬盘
-	err = bufferedWriter.Flush()
-	if err != nil {
-		return err
-	}
 
-	return nil
+	// 写内存buffer到硬盘
+	return bufferedWriter.Flush()
 }
 
 /*
@@ -123,7 +119,7 @@ func writeBuffer(filename string) error {
 
 	// 写字符串到buffer
 	bytesWritten, err := bufferedWriter.WriteString(
-		"asong真帅\n",
+		"mike 真帅\n",
 	)
 	if err != nil {
 		return err
