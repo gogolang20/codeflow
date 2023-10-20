@@ -127,6 +127,7 @@ func readByte3(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	// 每次读取 2 个字节
 	buf := make([]byte, 2)
@@ -141,7 +142,7 @@ func readByte3(filename string) error {
 		}
 		log.Printf("writeByte %s every read 2 byte is %s\n", filename, string(buf[:n]))
 	}
-	file.Close()
+
 	return nil
 }
 
@@ -153,6 +154,7 @@ func readScanner(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	// 可以定制Split函数做分隔函数
@@ -173,6 +175,6 @@ func readScanner(filename string) error {
 		// 得到数据，Bytes() 或者 Text()
 		log.Printf("readScanner get data is %s", scanner.Text())
 	}
-	file.Close()
+
 	return nil
 }

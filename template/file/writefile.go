@@ -26,18 +26,19 @@ func writeLine(filename string) error {
 		"test",
 		"123",
 	}
-	f, err := os.OpenFile(filename, os.O_WRONLY, 0666)
+	file, err := os.OpenFile(filename, os.O_WRONLY, 0666)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	for _, line := range data {
-		_, err := f.WriteString(line + "\n")
+		_, err := file.WriteString(line + "\n")
 		if err != nil {
 			return err
 		}
 	}
-	f.Close()
+
 	return nil
 }
 
@@ -47,6 +48,7 @@ func writeLine2(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	// 为这个文件创建buffered writer
 	bufferedWriter := bufio.NewWriter(file)
@@ -67,7 +69,6 @@ func writeLine2(filename string) error {
 		return err
 	}
 
-	file.Close()
 	return nil
 }
 
@@ -87,6 +88,8 @@ func writeAt(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer f.Close()
+
 	_, err = f.Write(data)
 	if err != nil {
 		return err
@@ -100,7 +103,7 @@ func writeAt(filename string) error {
 	if err != nil {
 		return err
 	}
-	f.Close()
+
 	return nil
 }
 
@@ -113,6 +116,7 @@ func writeBuffer(filename string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	// 为这个文件创建buffered writer
 	bufferedWriter := bufio.NewWriter(file)
@@ -142,6 +146,5 @@ func writeBuffer(filename string) error {
 		return err
 	}
 
-	file.Close()
 	return nil
 }
