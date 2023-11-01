@@ -3,29 +3,46 @@ package main
 import (
 	"context"
 	"fmt"
+	"google.golang.org/grpc/credentials/insecure"
+	"time"
 
 	"test-grpc/pb/person"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 )
+
+func MyUnaryClientInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	now := time.Now()
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	sub := time.Now().Sub(now)
+	fmt.Println("Client 执行时间: ", sub.Milliseconds())
+	return err
+}
 
 func main() {
 	/*
 		normal
 	*/
-	grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	// 拦截器
+	opt := grpc.WithUnaryInterceptor(MyUnaryClientInterceptor)
+	grpcConn, err := grpc.Dial("127.0.0.1:8888", grpc.WithTransportCredentials(insecure.NewCredentials()), opt)
 	if err != nil {
-		fmt.Println("conn err:", err)
+		fmt.Println("conn err: ", err)
 	}
 	defer grpcConn.Close()
 
+	// metadata
+	pairs := metadata.Pairs("token", "token999")
+	ctx := metadata.NewOutgoingContext(context.Background(), pairs)
+
 	client := person.NewSearchServiceClient(grpcConn)
-	res, err := client.Search(context.Background(), &person.PersonReq{Name: "i am scs"})
+	// res, err := client.Search(context.Background(), &person.PersonReq{Name: "i am scs"})
+	res, err := client.Search(ctx, &person.PersonReq{Name: "I am scs"})
 	if err != nil {
-		fmt.Println("call err:", err)
+		fmt.Println("call err: ", err)
 	}
-	fmt.Println("res:", res)
+	fmt.Println("res: ", res)
 
 	/*
 		In

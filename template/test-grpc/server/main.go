@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"net"
 	"time"
 
 	"test-grpc/pb/person"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 type personServer struct {
@@ -17,7 +19,18 @@ type personServer struct {
 
 func (*personServer) Search(ctx context.Context, req *person.PersonReq) (*person.PersonRes, error) {
 	name := req.GetName()
-	res := &person.PersonRes{Name: `revive ` + name + ` message.`}
+	res := &person.PersonRes{Name: `revive message: ` + name + `.`}
+
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		log.Fatalln("no metadata.")
+	}
+
+	for key, value := range md {
+		fmt.Println("key: ", key)
+		fmt.Println("value: ", value)
+	}
+
 	return res, nil
 }
 
@@ -75,18 +88,29 @@ func (*personServer) SearchIO(server person.SearchService_SearchIOServer) error 
 }
 
 func main() {
-	lis, err := net.Listen("tcp", ":8888")
+	listen, err := net.Listen("tcp", ":8888")
 	if err != nil {
-		fmt.Println("[server][main] listen err:", err)
+		fmt.Println("[server][main] listen err: ", err)
 	}
-	defer lis.Close()
+	defer listen.Close()
 
 	// cred, _ := credentials.NewServerTLSFromFile("", "")
 	// TLS: grpc.Creds(cred)
-	// 拦截器: grpc.UnknownServiceHandler()
-	s := grpc.NewServer()
+
+	// 拦截器
+	interceptor := grpc.UnaryInterceptor(MyUnaryServerInterceptor)
+	s := grpc.NewServer(interceptor)
 	person.RegisterSearchServiceServer(s, &personServer{})
 
-	fmt.Println("start")
-	s.Serve(lis)
+	fmt.Println("Start server...")
+	s.Serve(listen)
+}
+
+// 拦截器
+func MyUnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	now := time.Now()
+	resp, err = handler(ctx, req)
+	sub := time.Now().Sub(now)
+	fmt.Println("Server 执行时间: ", sub.Milliseconds())
+	return
 }
