@@ -13,6 +13,9 @@ import (
 )
 
 func MyUnaryClientInterceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	pairs := metadata.Pairs("token", "token999")
+	ctx = metadata.NewOutgoingContext(context.Background(), pairs)
+
 	now := time.Now()
 	err := invoker(ctx, method, req, reply, cc, opts...)
 	sub := time.Now().Sub(now)
@@ -33,7 +36,7 @@ func main() {
 	defer grpcConn.Close()
 
 	// metadata
-	pairs := metadata.Pairs("token", "token999")
+	pairs := metadata.Pairs("token1", "token999")
 	ctx := metadata.NewOutgoingContext(context.Background(), pairs)
 
 	client := person.NewSearchServiceClient(grpcConn)

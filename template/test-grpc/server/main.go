@@ -10,7 +10,9 @@ import (
 	"codeflow/template/test-grpc/pb/person"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/grpc/status"
 )
 
 type personServer struct {
@@ -94,11 +96,13 @@ func main() {
 	}
 	defer listen.Close()
 
+	// TODO TLS
 	// cred, _ := credentials.NewServerTLSFromFile("", "")
-	// TLS: grpc.Creds(cred)
+	// creds := grpc.Creds(cred)
 
 	// 拦截器
 	interceptor := grpc.UnaryInterceptor(MyUnaryServerInterceptor)
+	// s := grpc.NewServer(interceptor, creds)
 	s := grpc.NewServer(interceptor)
 	person.RegisterSearchServiceServer(s, &personServer{})
 
@@ -108,6 +112,18 @@ func main() {
 
 // 拦截器
 func MyUnaryServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		fmt.Println("[MyUnaryServerInterceptor] no metadata error.")
+		return nil, status.Error(codes.Unauthenticated, "认证失败")
+	}
+	token, ok := md["token"]
+	if !ok {
+		fmt.Println("[MyUnaryServerInterceptor] no token error.")
+		return nil, status.Error(codes.Unauthenticated, "没有 token, 认证失败")
+	}
+	fmt.Printf("[MyUnaryServerInterceptor] token: [%s]", token)
+
 	now := time.Now()
 	resp, err = handler(ctx, req)
 	sub := time.Now().Sub(now)
