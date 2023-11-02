@@ -1,21 +1,15 @@
-环境准备
-Linux系统：Ubuntu 20.04
-演示 创建+执行 GRPC服务demo
-
-资源地址
-https://www.bilibili.com/video/BV1Ev411w7yu/?spm_id_from=333.788
-
+gRPC quick start
 https://grpc.io/docs/languages/go/quickstart/
-
-go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.26
-go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1
+$ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
+$ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 
 配置环境变量
 export PATH="$PATH:$(go env GOPATH)/bin"
 
-当前文件目录下编译 (ubuntu)
-protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative ./person.proto
-
+当前文件目录下编译
+protoc --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    ./person.proto
 
 
 GRPC Gateway 地址

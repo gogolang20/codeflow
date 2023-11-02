@@ -3,12 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/grpc/credentials/insecure"
 	"time"
 
-	"test-grpc/pb/person"
+	"codeflow/template/test-grpc/pb/person"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
