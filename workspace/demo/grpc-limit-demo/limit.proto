@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package proto;
+
+option  go_package = "./proto";
+
+message PingReq{}
+message PingResp{}
+
+service limit{
+  rpc Ping(PingReq) returns (PingResp);
+}
+
+// cd ~/workspace/demo/grpc-limit-demo
+// goctl rpc protoc limit.proto --go_out=.  --go-grpc_out=.  --zrpc_out=.

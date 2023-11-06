@@ -1,0 +1,9 @@
+syntax = "v1"
+
+service limit {
+    @handler ping
+    get /ping
+}
+
+// cd ~/workspace/demo/rest-limit-demo
+// goctl api go -api limit.api -dir .
