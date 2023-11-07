@@ -1,11 +1,10 @@
 package main
 
 import (
+	person2 "codeflow/test-grpc/pb/person"
 	"context"
 	"fmt"
 	"time"
-
-	"codeflow/template/test-grpc/pb/person"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -39,9 +38,9 @@ func main() {
 	pairs := metadata.Pairs("token1", "token999")
 	ctx := metadata.NewOutgoingContext(context.Background(), pairs)
 
-	client := person.NewSearchServiceClient(grpcConn)
+	client := person2.NewSearchServiceClient(grpcConn)
 	// res, err := client.Search(context.Background(), &person.PersonReq{Name: "i am scs"})
-	res, err := client.Search(ctx, &person.PersonReq{Name: "I am scs"})
+	res, err := client.Search(ctx, &person2.PersonReq{Name: "I am scs"})
 	if err != nil {
 		fmt.Println("call err: ", err)
 	}

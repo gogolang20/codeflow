@@ -1,13 +1,12 @@
 package main
 
 import (
+	person2 "codeflow/test-grpc/pb/person"
 	"context"
 	"fmt"
 	"log"
 	"net"
 	"time"
-
-	"codeflow/template/test-grpc/pb/person"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
@@ -16,12 +15,12 @@ import (
 )
 
 type personServer struct {
-	person.UnimplementedSearchServiceServer
+	person2.UnimplementedSearchServiceServer
 }
 
-func (*personServer) Search(ctx context.Context, req *person.PersonReq) (*person.PersonRes, error) {
+func (*personServer) Search(ctx context.Context, req *person2.PersonReq) (*person2.PersonRes, error) {
 	name := req.GetName()
-	res := &person.PersonRes{Name: `revive message: ` + name + `.`}
+	res := &person2.PersonRes{Name: `revive message: ` + name + `.`}
 
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
@@ -36,31 +35,31 @@ func (*personServer) Search(ctx context.Context, req *person.PersonReq) (*person
 	return res, nil
 }
 
-func (*personServer) SearchIn(server person.SearchService_SearchInServer) error {
+func (*personServer) SearchIn(server person2.SearchService_SearchInServer) error {
 	for {
 		req, err := server.Recv()
 		fmt.Println(req)
 		if err != nil {
-			server.SendAndClose(&person.PersonRes{Name: "finish!!!"})
+			server.SendAndClose(&person2.PersonRes{Name: "finish!!!"})
 			break
 		}
 	}
 	return nil
 }
 
-func (*personServer) SearchOut(req *person.PersonReq, server person.SearchService_SearchOutServer) error {
+func (*personServer) SearchOut(req *person2.PersonReq, server person2.SearchService_SearchOutServer) error {
 	name := req.Name
 	for i := 0; ; i++ {
 		if i > 10 {
 			break
 		}
 		time.Sleep(time.Second)
-		server.Send(&person.PersonRes{Name: "what i get " + name})
+		server.Send(&person2.PersonRes{Name: "what i get " + name})
 	}
 	return nil
 }
 
-func (*personServer) SearchIO(server person.SearchService_SearchIOServer) error {
+func (*personServer) SearchIO(server person2.SearchService_SearchIOServer) error {
 	str := make(chan string)
 	i := 0
 	go func(i int) {
@@ -81,10 +80,10 @@ func (*personServer) SearchIO(server person.SearchService_SearchIOServer) error 
 	for {
 		s := <-str
 		if s == "finish" {
-			server.Send(&person.PersonRes{Name: s})
+			server.Send(&person2.PersonRes{Name: s})
 			break
 		}
-		server.Send(&person.PersonRes{Name: s})
+		server.Send(&person2.PersonRes{Name: s})
 	}
 	return nil
 }
@@ -104,7 +103,7 @@ func main() {
 	interceptor := grpc.UnaryInterceptor(MyUnaryServerInterceptor)
 	// s := grpc.NewServer(interceptor, creds)
 	s := grpc.NewServer(interceptor)
-	person.RegisterSearchServiceServer(s, &personServer{})
+	person2.RegisterSearchServiceServer(s, &personServer{})
 
 	fmt.Println("Start server...")
 	s.Serve(listen)

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package hello;
+
+option go_package = "./hello";
+
+message Request {
+}
+
+message Response {
+  string msg = 1;
+}
+
+service Hello {
+  rpc Ping(Request) returns(Response);
+}
+
+// protoc --descriptor_set_out=gateway/hello.pb hello.proto
+// goctl rpc protoc hello.proto --go_out=server --go-grpc_out=server --zrpc_out=server
