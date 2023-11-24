@@ -22,7 +22,7 @@ func OSReadAll(filename string) error {
 }
 
 func IOReadAll(filename string) error {
-	file, err := os.Open("mike.txt")
+	file, err := os.Open(filename)
 	if err != nil {
 		return err
 	}
@@ -38,7 +38,7 @@ func IOReadAll(filename string) error {
 	逐行读取
 */
 
-func readLine(filename string) error {
+func ReadLine(filename string) error {
 	file, err := os.OpenFile(filename, os.O_RDONLY, 0666)
 	if err != nil {
 		return err

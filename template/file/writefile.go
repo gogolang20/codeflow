@@ -8,11 +8,7 @@ import (
 
 // 快写文件
 func writeAll(filename string) error {
-	err := os.WriteFile("mike.txt", []byte("Hi mike\n"), 0666)
-	if err != nil {
-		return err
-	}
-	return nil
+	return os.WriteFile(filename, []byte("Hi mike\n"), 0666)
 }
 
 /*
@@ -21,11 +17,7 @@ func writeAll(filename string) error {
 
 // 直接操作IO
 func writeLine(filename string) error {
-	data := []string{
-		"mike",
-		"test",
-		"123",
-	}
+	data := []string{"mike", "test", "123"}
 	file, err := os.OpenFile(filename, os.O_WRONLY, 0666)
 	if err != nil {
 		return err
