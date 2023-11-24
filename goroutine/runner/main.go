@@ -8,30 +8,6 @@ import (
 	"time"
 )
 
-func createTask() func(int) {
-	return func(id int) {
-		time.Sleep(time.Second)
-		fmt.Printf("task complete %d\n", id)
-	}
-}
-
-func main() {
-	r := NewRunner(4 * time.Second)
-
-	r.AddTasks(createTask(), createTask(), createTask())
-
-	err := r.Start()
-	switch err {
-	case ErrInterupt:
-		fmt.Println("tasks interrupt")
-	case ErrTimeout:
-		fmt.Println("time out")
-	default:
-		fmt.Println("all tasks finished")
-	}
-
-}
-
 var (
 	ErrTimeout  = errors.New("cannot finish task with the timeout")
 	ErrInterupt = errors.New("revived interrupt from OS")
@@ -61,19 +37,6 @@ func (r *Runner) AddTasks(tasks ...func(int)) {
 	r.tasks = append(r.tasks, tasks...)
 }
 
-func (r *Runner) run() error {
-	for id, task := range r.tasks {
-		select {
-		case <-r.interrupt:
-			signal.Stop(r.interrupt)
-			return ErrInterupt
-		default:
-			task(id)
-		}
-	}
-	return nil
-}
-
 func (r *Runner) Start() error {
 	// replay interrupt from OS
 	signal.Notify(r.interrupt, os.Interrupt)
@@ -88,5 +51,41 @@ func (r *Runner) Start() error {
 		return err
 	case <-r.timeout:
 		return ErrTimeout
+	}
+}
+
+func (r *Runner) run() error {
+	for id, task := range r.tasks {
+		select {
+		case <-r.interrupt:
+			signal.Stop(r.interrupt)
+			return ErrInterupt
+		default:
+			task(id)
+		}
+	}
+	return nil
+}
+
+func main() {
+	r := NewRunner(4 * time.Second)
+
+	r.AddTasks(createTask(), createTask(), createTask())
+
+	err := r.Start()
+	switch err {
+	case ErrInterupt:
+		fmt.Println("tasks interrupt")
+	case ErrTimeout:
+		fmt.Println("time out")
+	default:
+		fmt.Println("all tasks finished")
+	}
+}
+
+func createTask() func(int) {
+	return func(id int) {
+		time.Sleep(time.Second)
+		fmt.Printf("task complete %d\n", id)
 	}
 }

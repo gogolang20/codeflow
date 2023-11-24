@@ -16,9 +16,9 @@ import (
 func main() {
 	tr := NewTracker()
 	go tr.Run()
-	_ = tr.Event(context.Background(), "test")
-	_ = tr.Event(context.Background(), "test")
-	_ = tr.Event(context.Background(), "test")
+	_ = tr.Event(context.Background(), "test-1")
+	_ = tr.Event(context.Background(), "test-2")
+	_ = tr.Event(context.Background(), "test-3")
 
 	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(5*time.Second))
 	defer cancel()
@@ -57,6 +57,8 @@ func (t *Tracker) Shutdown(ctx context.Context) {
 	close(t.ch)
 	select {
 	case <-t.stop:
+		fmt.Println("stop from tr")
 	case <-ctx.Done():
+		fmt.Println("stop from ctx")
 	}
 }
