@@ -17,14 +17,13 @@ func main() {
 	conf, err := config.GetConfig()
 	if err != nil {
 		panic(err)
-		return
 	}
-	clinetSet, err := kubernetes.NewForConfig(conf)
+	clinetset, err := kubernetes.NewForConfig(conf)
 	if err != nil {
 		panic(err)
-		return
 	}
-	informerFacory := informers.NewSharedInformerFactory(clinetSet, 30*time.Second)
+
+	informerFacory := informers.NewSharedInformerFactory(clinetset, 30*time.Second)
 	deployInformer := informerFacory.Apps().V1().Deployments()
 	informer := deployInformer.Informer()
 	deployLister := deployInformer.Lister()

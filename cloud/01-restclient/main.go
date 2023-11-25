@@ -29,10 +29,10 @@ func main() {
 
 	// get data
 	var pod = v1.Pod{}
-	err = restclient.Get().Namespace("default").Resource("pods").Name("test").Do(context.Background()).Into(&pod)
+	err = restclient.Get().Namespace("default").Resource("pods").Name("busybox").Do(context.Background()).Into(&pod)
 	if err != nil {
 		panic(err)
 	} else {
-		fmt.Println(pod.Name)
+		fmt.Println("restclient: ", pod.Name)
 	}
 }

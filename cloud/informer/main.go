@@ -28,6 +28,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	// 2 clientset
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
