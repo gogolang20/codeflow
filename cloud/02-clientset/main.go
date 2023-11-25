@@ -24,10 +24,10 @@ func main() {
 	}
 
 	// get data
-	pods, err := clientset.CoreV1().Pods("default").Get(context.TODO(), "test", v1.GetOptions{})
+	pod, err := clientset.CoreV1().Pods("default").Get(context.TODO(), "test", v1.GetOptions{})
 	if err != nil {
 		klog.Fatal(err)
 	} else {
-		fmt.Println(pods.Name)
+		fmt.Println(pod.Name)
 	}
 }
