@@ -92,6 +92,7 @@ func (c *controller) processNextItem() bool {
 		return false
 	}
 	defer c.queue.Done(item) // 处理完毕后移除 item
+
 	key := item.(string)
 	err := c.syncService(key)
 	if err != nil {
@@ -128,15 +129,10 @@ func (c *controller) syncService(key string) error {
 		ig := c.constructIngress(service)
 		// 通过client 创建
 		_, err := c.client.NetworkingV1().Ingresses(namespaceKey).Create(context.Background(), ig, v13.CreateOptions{})
-		if err != nil {
-			return err
-		}
+		return err
 	} else if !ok && ingress != nil { // 没有 annotation对应的service 并且 有ingress
 		// delete ingress
-		err := c.client.NetworkingV1().Ingresses(namespaceKey).Delete(context.Background(), name, v13.DeleteOptions{})
-		if err != nil {
-			return err
-		}
+		return c.client.NetworkingV1().Ingresses(namespaceKey).Delete(context.Background(), name, v13.DeleteOptions{})
 	}
 	return nil
 }
