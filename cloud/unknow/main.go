@@ -18,6 +18,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	clinetset, err := kubernetes.NewForConfig(conf)
 	if err != nil {
 		panic(err)
@@ -33,17 +34,21 @@ func main() {
 		UpdateFunc: onUpdate,
 		DeleteFunc: onDelete,
 	})
+
 	stopper := make(chan struct{}, 1)
 	defer close(stopper)
+
 	// 启动 Informer List & watch
 	informerFacory.Start(stopper)
 	// 等待所有的 Informer 缓存同步
 	informerFacory.WaitForCacheSync(stopper)
+
 	deployments, err := deployLister.Deployments("default").List(labels.Everything())
 	// 编辑 deploy 列表
 	for index, deploy := range deployments {
 		fmt.Printf("%d -> %s \n", index, deploy.Name)
 	}
+
 	<-stopper
 }
 
