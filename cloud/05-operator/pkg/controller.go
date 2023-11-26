@@ -33,12 +33,13 @@ type controller struct {
 }
 
 func (c *controller) updateService(oldObj interface{}, newObj interface{}) {
-	// todo 比较 annotation
+	// TODO 比较 annotation
 	if reflect.DeepEqual(oldObj, newObj) {
 		return
 	}
 	c.enqueue(newObj)
 }
+
 func (c *controller) addService(obj interface{}) {
 	c.enqueue(obj)
 }
@@ -49,6 +50,7 @@ func (c *controller) enqueue(obj interface{}) {
 	if err != nil {
 		runtime.HandleError(err)
 	}
+
 	c.queue.Add(key)
 }
 
@@ -56,15 +58,16 @@ func (c *controller) deleteIngress(obj interface{}) {
 	// 删除ingress时，如果service的annotation是存在的，并且是期望的
 	// 那么ingress应该被重建
 	ingress := obj.(*v12.Ingress)
+
 	// 获取ingress的service
 	ownerReference := v13.GetControllerOf(ingress)
-
 	if ownerReference == nil {
 		return
 	}
 	if ownerReference.Kind != "Service" {
 		return
 	}
+
 	c.queue.Add(ingress.Namespace + "/" + ingress.Name)
 }
 
