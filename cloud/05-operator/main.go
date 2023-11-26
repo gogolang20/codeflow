@@ -1,8 +1,9 @@
 package main
 
 import (
-	"codeflow/cloud/operator/pkg"
 	"log"
+
+	"codeflow/cloud/05-operator/pkg"
 
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
@@ -11,36 +12,25 @@ import (
 )
 
 /*
-一个小项目，关于operator
+一个小项目，关于 operator
 */
 func main() {
 	// 1 config
-	// var kube *string
-	// if home := homedir.HomeDir(); home != "" {
-	//	kube = flag.String("kube", filepath.Join(home, ".kube", "config"), "")
-	// }
-	// flag.Parse()
-	// config, err := clientcmd.BuildConfigFromFlags("", *kube)
-	// if err != nil {
-	//	panic(err)
-	// }
-
 	config, err := clientcmd.BuildConfigFromFlags("", clientcmd.RecommendedHomeFile)
 	if err != nil {
 		// controller 运行在集群内部，找不到config文件，进入报错
 		// 使用集群内部对象创建
 		inClusterConfig, err := rest.InClusterConfig()
 		if err != nil {
-			log.Fatalln("can't get config")
+			log.Fatalln("get config error: ", err)
 		}
 		config = inClusterConfig
 	}
 
 	// 2 client
-	// clientset 可以管理内建的资源对象
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
-		log.Fatalln("can't create clientset")
+		log.Fatalln("create clientset error: ", err)
 	}
 
 	// 3 informer
@@ -50,7 +40,7 @@ func main() {
 	ingressInformer := factory.Networking().V1().Ingresses()
 
 	// 4 add event handler
-	// 抽离到controller 中
+	// 抽离到 controller 中
 	controller := pkg.NewController(clientset, serviceInformer, ingressInformer)
 
 	// 5 informer start
