@@ -167,7 +167,7 @@ func (c *controller) constructIngress(service *v14.Service) *v12.Ingress {
 		IngressClassName: &inc,
 		Rules: []v12.IngressRule{
 			{
-				Host: "",
+				Host: "example.com",
 				IngressRuleValue: v12.IngressRuleValue{
 					HTTP: &v12.HTTPIngressRuleValue{
 						Paths: []v12.HTTPIngressPath{
