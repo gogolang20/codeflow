@@ -11,7 +11,6 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/gorilla/websocket v1.5.0
 	github.com/satori/go.uuid v1.2.0
-	github.com/sirupsen/logrus v1.7.0
 	github.com/urfave/cli v1.22.12
 	github.com/zeromicro/go-zero v1.6.0
 	golang.org/x/sync v0.3.0
